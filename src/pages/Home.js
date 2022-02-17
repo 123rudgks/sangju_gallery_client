@@ -1,15 +1,18 @@
-import React,{useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 function Home() {
   const navigate = useNavigate();
+  const [postList, setPostList] = useState([]);
   const onNewPost = () => {
     navigate("/new-post");
   };
-  useEffect(()=>{
-    axios.get("")
-  },[])
+  useEffect(() => {
+    axios.get("http://localhost:3001/posts").then((response) => {
+      setPostList(response.data);
+    });
+  }, []);
   return (
     <article>
       <div className="home_menu_container">
@@ -37,20 +40,17 @@ function Home() {
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>1</td>
-              <td>첫번째 글</td>
-              <td>상주네임드</td>
-              <td>2022.02.17</td>
-              <td>3</td>
-            </tr>
-            <tr>
-              <td>2</td>
-              <td>두번째 글</td>
-              <td>상주네임드</td>
-              <td>2022.02.17</td>
-              <td>2</td>
-            </tr>
+            {postList.map((post,index) => {
+              return (
+                <tr key={index}>
+                  <td>{post.id}</td>
+                  <td>{post.title}</td>
+                  <td>{post.username}</td>
+                  <td>{post.createdAt}</td>
+                  <td>0</td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
         <div className="home_menu_container">

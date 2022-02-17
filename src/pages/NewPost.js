@@ -1,23 +1,28 @@
 import React from "react";
+import {useNavigate} from "react-router-dom"
 import axios from "axios";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 
 function NewPost() {
+  const navigate = useNavigate();
   const initialValues = {
-    nickname: "",
+    username: "",
     password: "",
-    content: "",
+    title: "",
+    postText: "",
   };
   const validationSchema = Yup.object().shape({
-    nickname: Yup.string().required("닉네임을 입력해주세요"),
+    username: Yup.string().required("닉네임을 입력해주세요"),
     password: Yup.string().required("비밀번호를 입력해주세요"),
   });
   const onSubmit = (data) => {
     console.log(data)
-    // axios.post("http://localhost:3001/new-post",data).then((response)=>{
-    //   console.log(response.data)
-    // })
+    axios.post("http://localhost:3001/posts",data).then((response)=>{
+      if(!response.data.error){
+        navigate('/');
+      }
+    })
   };
   const TextArea = (props) => <textarea cols="204" rows="16" {...props} />;
   return (
@@ -31,7 +36,7 @@ function NewPost() {
           <Field
             autoComplete="off"
             id="inputCreatePost"
-            name="nickname"
+            name="username"
             placeholder="닉네임을 입력해주세요"
           />
           <Field
@@ -51,7 +56,7 @@ function NewPost() {
             as={TextArea}
             autoComplete="off"
             id="inputCreatePost"
-            name="content"
+            name="postText"
           />
         <button type="reset">초기화</button>
         <button type="submit">등록</button>
