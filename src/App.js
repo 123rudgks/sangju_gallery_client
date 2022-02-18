@@ -1,6 +1,8 @@
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+// * : 컴포넌트
 import Home from "./pages/Home";
 import NewPost from "./pages/NewPost";
+import PostDetail from "./pages/PostDetail";
 import "./App.css";
 
 function App() {
@@ -24,6 +26,9 @@ function App() {
           <Link className="menu" to="/">
             뉴스
           </Link>
+          <Link className="menu-right" to="/">
+            걍 넣어본 것
+          </Link>
         </nav>
 
         <section>
@@ -31,9 +36,10 @@ function App() {
           <hr />
 
           <Routes>
-            <Route path="/" element={<Home />} />
             <Route path="/new-post" element={<NewPost />} />
+            <Route path="/post-detail/:postId" element={<PostDetail />} />
           </Routes>
+          <Home />
         </section>
       </Router>
     </div>

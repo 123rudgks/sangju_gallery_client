@@ -1,22 +1,79 @@
+/* * : Home.js */
 .header_container {
- 
 }
 .logo {
-  
 }
-.header_menu {
- display: flex;
+.header_menu::after {
+  content: "";
+  display: block;
+  clear: both;
 }
-.menu{
-  margin-right:20px;
+.menu {
+  float: left;
+  margin-right: 20px;
+}
+.menu-right {
+  float: right;
 }
 
-.col{
-  width:6%;
+.col {
+  width: 6%;
 }
-#col_number{
+#col_number {
   width: 7%;
 }
-#col_title{
+#col_title {
   width: 18%;
+}
+.home-post:hover{
+  cursor: pointer;
+  background-color: gray;
+}
+
+/* * : PostDetail.js */
+.post-header-container {
+  border-bottom: solid 1px gray;
+}
+.float-clear::after {
+  content: "";
+  display: block;
+  clear: both;
+}
+.float-left{
+  float: left;
+}
+.float-right {
+  float: right;
+}
+.right-vertical-bar{
+  border-right: 1px solid gray;
+  padding-right: 5px;
+  margin-right: 5px;
+}
+.post-footer-container {
+  border-bottom: solid 1px gray;
+}
+.post-footer-header {
+  border-bottom: solid 1px gray;
+}
+.write-comment-container{
+  display: flex;
+  flex-direction: row;
+}
+.write-comment-left{
+  display: flex;
+  flex-direction: column;
+}
+.write-comment-right{
+  display: flex;
+  flex-direction: column;
+}
+.comment-container{
+  display: flex;
+}
+.comment-user{
+  width:100px;
+}
+.comment-text{
+  flex:1;
 }

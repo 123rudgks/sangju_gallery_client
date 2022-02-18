@@ -8,9 +8,13 @@ function Home() {
   const onNewPost = () => {
     navigate("/new-post");
   };
+  const onMovePost = (postId) => {
+    navigate(`/post-detail/${postId}`);
+  };
   useEffect(() => {
     axios.get("http://localhost:3001/posts").then((response) => {
       setPostList(response.data);
+      
     });
   }, []);
   return (
@@ -40,9 +44,13 @@ function Home() {
             </tr>
           </thead>
           <tbody>
-            {postList.map((post,index) => {
+            {postList.map((post, index) => {
               return (
-                <tr key={index}>
+                <tr
+                  className="home-post"
+                  key={index}
+                  onClick={() => onMovePost(post.id)}
+                >
                   <td>{post.id}</td>
                   <td>{post.title}</td>
                   <td>{post.username}</td>
