@@ -9,12 +9,11 @@ function Home() {
     navigate("/new-post");
   };
   const onMovePost = (postId) => {
-    navigate(`/post-detail/${postId}`);
+    navigate(`/post-detail/${postId}`, { replace: true });
   };
-  useEffect(() => {
-    axios.get("http://localhost:3001/posts").then((response) => {
+  useEffect(async () => {
+    await axios.get("http://localhost:3001/posts").then((response) => {
       setPostList(response.data);
-      
     });
   }, []);
   return (

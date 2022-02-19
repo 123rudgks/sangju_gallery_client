@@ -8,24 +8,30 @@ import * as Yup from "yup";
 function PostDetail() {
   // * : states 및 변수들
   const [postInfo, setPostInfo] = useState({});
+  const [likes,setLikes] = useState([]);
   const [commentsList, setCommentsList] = useState([]);
   // * : 함수
-  let params = useParams();
+  let { postId } = useParams();
+  const TextArea = (props) => <textarea cols="100" rows="5" {...props} />;
   const onCommentSubmit = (data, { resetForm }) => {
     axios.post("http://localhost:3001/Comments", data).then((response) => {
       if (response.data.error) {
         console.log(response.data.error);
         return;
       }
-      const newCommentsList = [...commentsList];
-      newCommentsList.push(response.data);
-      setCommentsList(newCommentsList);
+      setCommentsList(commentsList.concat(response.data));
       resetForm();
     });
   };
-  const TextArea = (props) => <textarea cols="100" rows="5" {...props} />;
+  const onLike = async () => {
+    await axios
+      .post(`http://localhost:3001/likes`, { PostId: postId })
+      .then((response) => {
+        setLikes(likes.concat('tempLikeAtClientSide'));
+      });
+  };
   // * : 기타 등등
-  const postId = params.postId;
+
   const initialValues = {
     username: "",
     password: "",
@@ -58,7 +64,13 @@ function PostDetail() {
         }
         setCommentsList(response.data);
       });
-  }, []);
+    // likes 정보 받아오기
+    await axios
+      .get(`http://localhost:3001/likes/${postId}`)
+      .then((response) => {
+        setLikes(response.data);
+      });
+  }, [postId]);
 
   return (
     <article>
@@ -76,7 +88,7 @@ function PostDetail() {
       <div className="post-body-container">
         <div className="post-text">{postInfo.postText}</div>
         <div className="post-likes-hates">
-          0<button>like</button>
+          {likes.length}<button onClick={onLike}>like</button>
           <button>hate</button>
         </div>
       </div>

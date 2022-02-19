@@ -50,6 +50,15 @@
   padding-right: 5px;
   margin-right: 5px;
 }
+.post-likes-hates{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width:200px;
+  height: 100px;
+  background-color: aqua;
+  margin:0 auto;
+}
 .post-footer-container {
   border-bottom: solid 1px gray;
 }
