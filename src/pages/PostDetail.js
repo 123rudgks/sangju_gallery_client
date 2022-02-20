@@ -13,6 +13,7 @@ function PostDetail() {
   const [likes, setLikes] = useState([]);
   const [hates, setHates] = useState([]);
   const [commentsList, setCommentsList] = useState([]);
+  const [commentPassword, setCommentPassword] = useState();
   // * : 함수
   let { postId } = useParams();
   const TextArea = (props) => <textarea cols="100" rows="5" {...props} />;
@@ -39,14 +40,30 @@ function PostDetail() {
         console.log(response.data.error);
         return;
       }
+      console.log(response.data);
       setCommentsList(commentsList.concat(response.data));
       resetForm();
     });
   };
-  const onDeleteComment = ()=>{
+  // 댓글 삭제
+  const onDeleteComment = async (commentId) => {
     // ToDO : 비밀번호 체크
     // todo : 비밀번호 맞으면 삭제, 아니면 alert
-  }
+    await axios
+      .delete(`http://localhost:3001/Comments/${commentId}`, {
+        data: { newPassword: commentPassword },
+      })
+      .then((response) => {
+        if (response.data.error) {
+          alert("wrong password");
+          return;
+        }
+        setCommentsList(
+          commentsList.filter((comment) => comment.id !== commentId)
+        );
+        console.log(response.data);
+      });
+  };
 
   // * : 기타 등등
 
@@ -136,13 +153,38 @@ function PostDetail() {
               <div className="comment-container">
                 <div className="comment-user">{comment.username}</div>
                 <div className="comment-text">{comment.commentBody}</div>
-                <div className="comment-password-check">
-                  <input></input>
-                  <button>확인</button>
-                  <button>취소</button>
+
+                <div className="hidden">
+                  <input
+                    onChange={(e) => {
+                      setCommentPassword(e.target.value);
+                    }}
+                  />
+                  <button
+                    onClick={(e) => {
+                      onDeleteComment(comment.id);
+                      e.target.parentElement.className = "hidden";
+                    }}
+                  >
+                    확인
+                  </button>
+                  <button
+                    onClick={(e) => {
+                      e.target.parentElement.className = "hidden";
+                    }}
+                  >
+                    취소
+                  </button>
                 </div>
                 <div className="comment-date">{comment.updatedAt}</div>
-                <button onClick={onDeleteComment}>x</button>
+                <button
+                  onClick={(e) => {
+                    e.target.previousElementSibling.previousElementSibling.className =
+                      "comment-password-check";
+                  }}
+                >
+                  aas
+                </button>
               </div>
             );
           })}
@@ -190,7 +232,7 @@ function PostDetail() {
           </div>
         </Form>
       </Formik>
-      <Home postId={postId}/>
+      <Home postId={postId} />
     </article>
   );
 }
