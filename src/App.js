@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import Home from "./pages/Home";
 import NewPost from "./pages/NewPost";
 import PostDetail from "./pages/PostDetail";
+import DeletePost from "./pages/DeletePost";
 import "./App.css";
 
 function App() {
@@ -36,10 +37,11 @@ function App() {
           <hr />
 
           <Routes>
+            <Route path="/" element={<Home />} />
             <Route path="/new-post" element={<NewPost />} />
             <Route path="/post-detail/:postId" element={<PostDetail />} />
+            <Route path="/delete-post/:postId" element={<DeletePost />} />
           </Routes>
-          <Home />
         </section>
       </Router>
     </div>

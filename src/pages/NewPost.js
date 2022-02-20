@@ -3,6 +3,8 @@ import {useNavigate} from "react-router-dom"
 import axios from "axios";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
+// * : components
+import Home from "./Home";
 
 function NewPost() {
   const navigate = useNavigate();
@@ -20,7 +22,7 @@ function NewPost() {
     console.log(data)
     axios.post("http://localhost:3001/posts",data).then((response)=>{
       if(!response.data.error){
-        navigate('/');
+        navigate('/',{replace:true});
       }
     })
   };
@@ -62,6 +64,7 @@ function NewPost() {
         <button type="submit">등록</button>
         </Form>
       </Formik>
+      <Home/>
     </article>
   );
 }

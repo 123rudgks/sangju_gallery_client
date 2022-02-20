@@ -1,8 +1,9 @@
+// * : libaray
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
-function Home() {
+function Home({ postId }) {
   const navigate = useNavigate();
   const [postList, setPostList] = useState([]);
   const onNewPost = () => {
@@ -10,6 +11,18 @@ function Home() {
   };
   const onMovePost = (postId) => {
     navigate(`/post-detail/${postId}`, { replace: true });
+  };
+  const onMoveDelete = async (postId) => {
+    // Todo : 비밀번호 입력 창으로 이동
+    navigate(`/delete-post/${postId}`);
+    // await axios
+    //   .delete(`http://localhost:3001/posts/${postId}`)
+    //   .then((response) => {
+    //     navigate("/");
+    //   });
+  };
+  const onMoveHome = () => {
+    navigate("/");
   };
   useEffect(async () => {
     await axios.get("http://localhost:3001/posts").then((response) => {
@@ -19,7 +32,7 @@ function Home() {
   return (
     <article>
       <div className="home_menu_container">
-        <button>전체글</button>
+        <button onClick={onMoveHome}>전체글</button>
         <button>개념글</button>
         <button>공지</button>
       </div>
@@ -54,16 +67,31 @@ function Home() {
                   <td>{post.title}</td>
                   <td>{post.username}</td>
                   <td>{post.createdAt}</td>
-                  <td>0</td>
+                  <td>{}</td>
                 </tr>
               );
             })}
           </tbody>
         </table>
-        <div className="home_menu_container">
-          <button>전체글</button>
+        <div className="float-clear home_menu_container">
+          <button onClick={onMoveHome}>전체글</button>
           <button>개념글</button>
-          <button onClick={onNewPost}>글쓰기</button>
+          <button className="float-right" onClick={onNewPost}>
+            글쓰기
+          </button>
+          {postId && (
+            <>
+              <button
+                className="float-right"
+                onClick={() => {
+                  onMoveDelete(postId);
+                }}
+              >
+                삭제
+              </button>
+              <button className="float-right">수정</button>
+            </>
+          )}
         </div>
       </div>
     </article>

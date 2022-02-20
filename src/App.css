@@ -86,3 +86,8 @@
 .comment-text{
   flex:1;
 }
+.comment-password-check{
+  position: relative;
+  left: 200px;
+  top: 10px;
+}

@@ -4,15 +4,35 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
+// * : Components
+import Home from "./Home";
 
 function PostDetail() {
   // * : states 및 변수들
   const [postInfo, setPostInfo] = useState({});
-  const [likes,setLikes] = useState([]);
+  const [likes, setLikes] = useState([]);
+  const [hates, setHates] = useState([]);
   const [commentsList, setCommentsList] = useState([]);
   // * : 함수
   let { postId } = useParams();
   const TextArea = (props) => <textarea cols="100" rows="5" {...props} />;
+  // 좋아요 버튼 클릭 시 이벤트
+  const onLike = async () => {
+    await axios
+      .post(`http://localhost:3001/likes`, { PostId: postId })
+      .then((response) => {
+        setLikes(likes.concat("tempLikeAtClientSide"));
+      });
+  };
+  // 싫어요 버튼 클릭 시 이벤트
+  const onHate = async () => {
+    await axios
+      .post(`http://localhost:3001/hates`, { PostId: postId })
+      .then((response) => {
+        setHates(hates.concat("tempHateAtClientSide"));
+      });
+  };
+  // 댓글 등록 버튼 클릭 시 이벤트
   const onCommentSubmit = (data, { resetForm }) => {
     axios.post("http://localhost:3001/Comments", data).then((response) => {
       if (response.data.error) {
@@ -23,13 +43,11 @@ function PostDetail() {
       resetForm();
     });
   };
-  const onLike = async () => {
-    await axios
-      .post(`http://localhost:3001/likes`, { PostId: postId })
-      .then((response) => {
-        setLikes(likes.concat('tempLikeAtClientSide'));
-      });
-  };
+  const onDeleteComment = ()=>{
+    // ToDO : 비밀번호 체크
+    // todo : 비밀번호 맞으면 삭제, 아니면 alert
+  }
+
   // * : 기타 등등
 
   const initialValues = {
@@ -54,6 +72,18 @@ function PostDetail() {
         }
         setPostInfo(response.data);
       });
+    // likes 정보 받아오기
+    await axios
+      .get(`http://localhost:3001/likes/${postId}`)
+      .then((response) => {
+        setLikes(response.data);
+      });
+    // hates 정보 받아오기
+    await axios
+      .get(`http://localhost:3001/hates/${postId}`)
+      .then((response) => {
+        setHates(response.data);
+      });
     // comments 정보 받아오기
     await axios
       .get(`http://localhost:3001/comments/${postId}`)
@@ -63,12 +93,6 @@ function PostDetail() {
           return;
         }
         setCommentsList(response.data);
-      });
-    // likes 정보 받아오기
-    await axios
-      .get(`http://localhost:3001/likes/${postId}`)
-      .then((response) => {
-        setLikes(response.data);
       });
   }, [postId]);
 
@@ -88,8 +112,10 @@ function PostDetail() {
       <div className="post-body-container">
         <div className="post-text">{postInfo.postText}</div>
         <div className="post-likes-hates">
-          {likes.length}<button onClick={onLike}>like</button>
-          <button>hate</button>
+          {likes.length}
+          <button onClick={onLike}>like</button>
+          <button onClick={onHate}>hate</button>
+          {hates.length}
         </div>
       </div>
 
@@ -110,7 +136,13 @@ function PostDetail() {
               <div className="comment-container">
                 <div className="comment-user">{comment.username}</div>
                 <div className="comment-text">{comment.commentBody}</div>
+                <div className="comment-password-check">
+                  <input></input>
+                  <button>확인</button>
+                  <button>취소</button>
+                </div>
                 <div className="comment-date">{comment.updatedAt}</div>
+                <button onClick={onDeleteComment}>x</button>
               </div>
             );
           })}
@@ -158,6 +190,7 @@ function PostDetail() {
           </div>
         </Form>
       </Formik>
+      <Home postId={postId}/>
     </article>
   );
 }
