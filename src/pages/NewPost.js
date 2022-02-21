@@ -1,5 +1,6 @@
+// * : librarys
 import React from "react";
-import {useNavigate} from "react-router-dom"
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
@@ -7,7 +8,18 @@ import * as Yup from "yup";
 import Home from "./Home";
 
 function NewPost() {
+  // * : functions
   const navigate = useNavigate();
+  const onSubmit = (data) => {
+    console.log(data);
+    axios.post("http://localhost:3001/posts", data).then((response) => {
+      if (!response.data.error) {
+        navigate("/", { replace: true });
+      }
+    });
+  };
+  const TextArea = (props) => <textarea cols="204" rows="16" {...props} />;
+  // * : etc..
   const initialValues = {
     username: "",
     password: "",
@@ -18,15 +30,7 @@ function NewPost() {
     username: Yup.string().required("닉네임을 입력해주세요"),
     password: Yup.string().required("비밀번호를 입력해주세요"),
   });
-  const onSubmit = (data) => {
-    console.log(data)
-    axios.post("http://localhost:3001/posts",data).then((response)=>{
-      if(!response.data.error){
-        navigate('/',{replace:true});
-      }
-    })
-  };
-  const TextArea = (props) => <textarea cols="204" rows="16" {...props} />;
+
   return (
     <article>
       <Formik
@@ -60,11 +64,11 @@ function NewPost() {
             id="inputCreatePost"
             name="postText"
           />
-        <button type="reset">초기화</button>
-        <button type="submit">등록</button>
+          <button type="reset">초기화</button>
+          <button type="submit">등록</button>
         </Form>
       </Formik>
-      <Home/>
+      <Home />
     </article>
   );
 }

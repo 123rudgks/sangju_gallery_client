@@ -1,26 +1,27 @@
-// * : libaray
+// * : library
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 function Home({ postId }) {
-  const navigate = useNavigate();
+  // * : states
   const [postList, setPostList] = useState([]);
+  // * : functions
+  const navigate = useNavigate();
+  // move to writing post page
   const onNewPost = () => {
     navigate("/new-post");
   };
+  // move to post detail page
   const onMovePost = (postId) => {
+    // Todo: replace는 뭐지?
     navigate(`/post-detail/${postId}`, { replace: true });
   };
+  // go to password page for deleting post
   const onMoveDelete = async (postId) => {
-    // Todo : 비밀번호 입력 창으로 이동
     navigate(`/delete-post/${postId}`);
-    // await axios
-    //   .delete(`http://localhost:3001/posts/${postId}`)
-    //   .then((response) => {
-    //     navigate("/");
-    //   });
   };
+  // go to home page
   const onMoveHome = () => {
     navigate("/");
   };
@@ -36,6 +37,7 @@ function Home({ postId }) {
         <button>개념글</button>
         <button>공지</button>
       </div>
+
 
       <div className="lists_container">
         <table>
@@ -55,6 +57,7 @@ function Home({ postId }) {
               <th scope="col">추천</th>
             </tr>
           </thead>
+
           <tbody>
             {postList.map((post, index) => {
               return (
@@ -67,12 +70,14 @@ function Home({ postId }) {
                   <td>{post.title}</td>
                   <td>{post.username}</td>
                   <td>{post.createdAt}</td>
-                  <td>{}</td>
+                  <td>{post.Likes.length}</td>
                 </tr>
               );
             })}
           </tbody>
         </table>
+
+
         <div className="float-clear home_menu_container">
           <button onClick={onMoveHome}>전체글</button>
           <button>개념글</button>

@@ -3,6 +3,10 @@
 }
 .logo {
 }
+.header_menu{
+  background-color: #219F94;
+  padding: 10px 100px;
+}
 .header_menu::after {
   content: "";
   display: block;
@@ -11,11 +15,15 @@
 .menu {
   float: left;
   margin-right: 20px;
+  font-size:1.2rem;
+  color:rgb(248, 255, 149);
 }
 .menu-right {
   float: right;
 }
-
+.body_container{
+  padding: 0 100px;
+}
 .col {
   width: 6%;
 }
@@ -85,6 +93,9 @@
 }
 .comment-text{
   flex:1;
+}
+.comment-date{
+ 
 }
 .comment-password-check{
   position: relative;

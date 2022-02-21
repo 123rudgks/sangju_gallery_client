@@ -1,17 +1,22 @@
+// * : librarys
 import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 
 function DeletePost() {
+  // * : utilities
   const { postId } = useParams();
   const navigate = useNavigate();
+  // * : states
   const [password, setPassword] = useState();
+  // * : functions
+  // go back to its post page
   const onMoveBack = () => {
     navigate(`/post-detail/${postId}`);
   };
-  const onDeletePost = () => {
-    // postId, password
-    axios
+  // delete post
+  const onDeletePost = async () => {
+    await axios
       .delete(`http://localhost:3001/posts/${postId}`, {
         data: {
           newPassword: password,
@@ -25,6 +30,7 @@ function DeletePost() {
         }
       });
   };
+  
   return (
     <div>
       비밀번호를 입력하세요

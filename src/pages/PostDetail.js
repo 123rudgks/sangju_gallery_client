@@ -10,10 +10,10 @@ import Home from "./Home";
 function PostDetail() {
   // * : states 및 변수들
   const [postInfo, setPostInfo] = useState({});
-  const [likes, setLikes] = useState([]);
-  const [hates, setHates] = useState([]);
+  const [likes, setLikes] = useState(0);
+  const [hates, setHates] = useState(0);
   const [commentsList, setCommentsList] = useState([]);
-  const [commentPassword, setCommentPassword] = useState();
+  const [commentPassword, setCommentPassword] = useState("");
   // * : 함수
   let { postId } = useParams();
   const TextArea = (props) => <textarea cols="100" rows="5" {...props} />;
@@ -22,7 +22,7 @@ function PostDetail() {
     await axios
       .post(`http://localhost:3001/likes`, { PostId: postId })
       .then((response) => {
-        setLikes(likes.concat("tempLikeAtClientSide"));
+        setLikes(parseInt(likes)+1);
       });
   };
   // 싫어요 버튼 클릭 시 이벤트
@@ -30,7 +30,7 @@ function PostDetail() {
     await axios
       .post(`http://localhost:3001/hates`, { PostId: postId })
       .then((response) => {
-        setHates(hates.concat("tempHateAtClientSide"));
+        setHates(parseInt(hates)+1);
       });
   };
   // 댓글 등록 버튼 클릭 시 이벤트
@@ -40,15 +40,13 @@ function PostDetail() {
         console.log(response.data.error);
         return;
       }
-      console.log(response.data);
+      console.log("PostDetail.js -> onCommentSubmit : ",response.data);
       setCommentsList(commentsList.concat(response.data));
       resetForm();
     });
   };
   // 댓글 삭제
   const onDeleteComment = async (commentId) => {
-    // ToDO : 비밀번호 체크
-    // todo : 비밀번호 맞으면 삭제, 아니면 alert
     await axios
       .delete(`http://localhost:3001/Comments/${commentId}`, {
         data: { newPassword: commentPassword },
@@ -63,10 +61,10 @@ function PostDetail() {
         );
         console.log(response.data);
       });
+    setCommentPassword("");
   };
 
   // * : 기타 등등
-
   const initialValues = {
     username: "",
     password: "",
@@ -88,18 +86,8 @@ function PostDetail() {
           return;
         }
         setPostInfo(response.data);
-      });
-    // likes 정보 받아오기
-    await axios
-      .get(`http://localhost:3001/likes/${postId}`)
-      .then((response) => {
-        setLikes(response.data);
-      });
-    // hates 정보 받아오기
-    await axios
-      .get(`http://localhost:3001/hates/${postId}`)
-      .then((response) => {
-        setHates(response.data);
+        setLikes(response.data.Likes.length);
+        setHates(response.data.Hates.length);
       });
     // comments 정보 받아오기
     await axios
@@ -111,7 +99,7 @@ function PostDetail() {
         }
         setCommentsList(response.data);
       });
-  }, [postId]);
+  }, [postId,likes,hates]);
 
   return (
     <article>
@@ -122,17 +110,17 @@ function PostDetail() {
         </span>
         <span className="float-left">{postInfo.updatedAt}</span>
         <button className="float-right">댓글 {commentsList.length}</button>
-        <span className="float-right right-vertical-bar">추천</span>
+        <span className="float-right right-vertical-bar">추천{likes} </span>
         <span className="float-right right-vertical-bar">조회</span>
       </div>
 
       <div className="post-body-container">
         <div className="post-text">{postInfo.postText}</div>
         <div className="post-likes-hates">
-          {likes.length}
+          {likes}
           <button onClick={onLike}>like</button>
           <button onClick={onHate}>hate</button>
-          {hates.length}
+          {hates}
         </div>
       </div>
 
@@ -150,12 +138,12 @@ function PostDetail() {
         <div className="post-comments">
           {commentsList.map((comment, index) => {
             return (
-              <div className="comment-container">
+              <div className="comment-container" key={index}>
                 <div className="comment-user">{comment.username}</div>
                 <div className="comment-text">{comment.commentBody}</div>
-
                 <div className="hidden">
                   <input
+                    value={commentPassword}
                     onChange={(e) => {
                       setCommentPassword(e.target.value);
                     }}
@@ -171,6 +159,7 @@ function PostDetail() {
                   <button
                     onClick={(e) => {
                       e.target.parentElement.className = "hidden";
+                      setCommentPassword("");
                     }}
                   >
                     취소
@@ -179,11 +168,20 @@ function PostDetail() {
                 <div className="comment-date">{comment.updatedAt}</div>
                 <button
                   onClick={(e) => {
+                    // Todo: 이 부분 어떻게 더 좋게 만들까
+                    setCommentPassword("");
+                    // 다른 댓글 row의 password창 닫아주기
+                    const classList = document.getElementsByClassName(
+                      "comment-password-check"
+                    );
+                    while (classList.length > 0) {
+                      classList[0].className = "hidden";
+                    }
                     e.target.previousElementSibling.previousElementSibling.className =
                       "comment-password-check";
                   }}
                 >
-                  aas
+                  X
                 </button>
               </div>
             );
