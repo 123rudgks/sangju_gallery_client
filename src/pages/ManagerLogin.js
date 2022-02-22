@@ -1,7 +1,8 @@
 // * : libraries
 import React from "react";
-import {useNavigate} from "react-router-dom"
+import { useNavigate } from "react-router-dom";
 import { Formik, Field, Form } from "formik";
+import * as Yup from "yup";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import IconButton from "@mui/material/IconButton";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
@@ -17,14 +18,21 @@ function ManagerLogin() {
       },
     },
   });
+  const SignupSchema = Yup.object().shape({
+    email: Yup.string().email('Invalid email').required('Required'),
+  });
   const onSubmit = () => {};
   return (
-    <Formik initialValues={initialValues} onSubmit={onSubmit}>
+    <Formik  initialValues={initialValues} validationSchema={SignupSchema} onSubmit={onSubmit}>
       <Form>
         <div className="manager-container">
-        <div className="back-arrow">
+          <div className="back-arrow">
             <ThemeProvider theme={theme}>
-              <IconButton aria-label="move-back" color="backArrow" onClick={()=>navigate('/')}>
+              <IconButton
+                aria-label="move-back"
+                color="backArrow"
+                onClick={() => navigate("/")}
+              >
                 <ArrowBackIosNewIcon />
               </IconButton>
             </ThemeProvider>
@@ -43,7 +51,9 @@ function ManagerLogin() {
             />
           </div>
           <div>
-            <button onClick={()=>navigate('/manager-register')}>회원가입</button>
+            <button onClick={() => navigate("/manager-register")}>
+              회원가입
+            </button>
             <button type="submit">로그인</button>
           </div>
         </div>

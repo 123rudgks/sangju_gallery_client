@@ -1,7 +1,8 @@
 // * : libraries
-import React from "react";
+import React,{useState} from "react";
 import {useNavigate} from "react-router-dom"
-import { Formik, Field, Form } from "formik";
+import { Formik, Field, Form, ErrorMessage} from "formik";
+import * as Yup from "yup";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import IconButton from "@mui/material/IconButton";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
@@ -18,8 +19,16 @@ function ManagerRegister() {
   });
   const initialValues = {};
   const onSubmit = () => {};
+  const SignupSchema = Yup.object().shape({
+    email: Yup.string().email(' Invalid email').required(' Required'),
+    id: Yup.string().required(' Required'),
+    password: Yup.string().required(' Required'),
+    passwordCheck: Yup.string()
+    .oneOf([Yup.ref('password'), null],' not Match')
+    .required(' Required')
+  });
   return (
-    <Formik initialValues={initialValues} onSubmit={onSubmit}>
+    <Formik  initialValues={initialValues} validationSchema={SignupSchema} onSubmit={onSubmit}>
       <Form>
         <div className="manager-container">
           <div className="back-arrow">
@@ -31,12 +40,14 @@ function ManagerRegister() {
           </div>
           <div className="field-container">
             <label htmlFor="email">Email : </label>
-            <Field id="email" name="email" placeholder="Email을 입력하세요" />
+            <Field id="email" name="email" type="email" placeholder="Email을 입력하세요" />
             <button>중복체크</button>
+            <ErrorMessage name="email" component="span" className="ErrorMessage"/>
           </div>
           <div className="field-container">
             <label htmlFor="id">ID : </label>
-            <Field id="id" name="id" placeholder="ID를 입력하세요" />
+            <Field id="id" name="id" placeholder="ID를 입력하세요" autocomplete="off"/>
+            <ErrorMessage name="id" component="span" className="ErrorMessage"/>
           </div>
           <div className="field-container">
             <label htmlFor="password">Password : </label>
@@ -55,6 +66,7 @@ function ManagerRegister() {
               placeholder="Password를 다시 입력하세요"
               type="password"
             />
+            <ErrorMessage name="passwordCheck" component="span" className="ErrorMessage"/>
           </div>
           <div>
             <button onSubmit={onSubmit}>회원가입</button>
