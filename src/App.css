@@ -127,3 +127,21 @@ th, td {
 .hidden {
   display: none;
 }
+
+/** Manager **/
+.manager-container{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid black;
+  width: 500px;
+  padding: 10px;
+  margin: 0 auto;
+}
+.field-container{
+  width: 80%;
+}
+.back-arrow{
+  margin-right: auto;
+}

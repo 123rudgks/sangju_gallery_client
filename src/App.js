@@ -4,6 +4,8 @@ import Home from "./pages/Home";
 import NewPost from "./pages/NewPost";
 import PostDetail from "./pages/PostDetail";
 import DeletePost from "./pages/DeletePost";
+import ManagerLogin from "./pages/ManagerLogin";
+import ManagerRegister from "./pages/ManagerRegister";
 // * : etc..
 import "./App.css";
 
@@ -42,6 +44,8 @@ function App() {
             <Route path="/new-post" element={<NewPost />} />
             <Route path="/post-detail/:postId" element={<PostDetail />} />
             <Route path="/delete-post/:postId" element={<DeletePost />} />
+            <Route path="/manager-login" element={<ManagerLogin />} />
+            <Route path="/manager-register" element={<ManagerRegister />} />
           </Routes>
         </section>
       </Router>
