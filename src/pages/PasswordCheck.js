@@ -17,7 +17,7 @@ function PasswordCheck() {
   // delete post
   const onDeletePost = async () => {
     await axios
-      .delete(`http://localhost:3001/posts/${postId}`, {
+      .delete(`https://sangju-gallery.herokuapp.com/posts/${postId}`, {
         data: {
           newPassword: password,
         },

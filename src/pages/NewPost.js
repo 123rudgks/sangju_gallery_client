@@ -12,7 +12,7 @@ function NewPost() {
   const navigate = useNavigate();
   const onSubmit = (data) => {
     console.log(data);
-    axios.post("http://localhost:3001/posts", data).then((response) => {
+    axios.post("https://sangju-gallery.herokuapp.com/posts", data).then((response) => {
       if (!response.data.error) {
         navigate("/", { replace: true });
       }

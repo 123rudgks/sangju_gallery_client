@@ -15,7 +15,7 @@ function UpdatePost() {
   const navigate = useNavigate();
   const onSubmit = async (data) => {
     await axios
-      .put(`http://localhost:3001/posts/update-word/${postId}`, data)
+      .put(`https://sangju-gallery.herokuapp.com/posts/update-word/${postId}`, data)
       .then((response) => {
         if (!response.data.error) {
           navigate(`/post-detail/${postId}`);
@@ -38,7 +38,7 @@ function UpdatePost() {
   useEffect(async () => {
     // post 정보 받아오기
     await axios
-      .get(`http://localhost:3001/posts/${postId}`)
+      .get(`https://sangju-gallery.herokuapp.com/posts/${postId}`)
       .then((response) => {
         if (response.data.error) {
           console.log("useEffect", response.data.error);

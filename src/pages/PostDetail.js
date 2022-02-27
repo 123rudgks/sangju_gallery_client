@@ -35,7 +35,7 @@ function PostDetail() {
   // 좋아요 버튼 클릭 시 이벤트
   const onLike = async () => {
     await axios
-      .post(`http://localhost:3001/likes`, { PostId: postId })
+      .post(`https://sangju-gallery.herokuapp.com/likes`, { PostId: postId })
       .then((response) => {
         setLikes(parseInt(likes) + 1);
       });
@@ -43,14 +43,14 @@ function PostDetail() {
   // 싫어요 버튼 클릭 시 이벤트
   const onHate = async () => {
     await axios
-      .post(`http://localhost:3001/hates`, { PostId: postId })
+      .post(`https://sangju-gallery.herokuapp.com/hates`, { PostId: postId })
       .then((response) => {
         setHates(parseInt(hates) + 1);
       });
   };
   // 댓글 등록 버튼 클릭 시 이벤트
   const onCommentSubmit = (data, { resetForm }) => {
-    axios.post("http://localhost:3001/Comments", data).then((response) => {
+    axios.post("https://sangju-gallery.herokuapp.com/Comments", data).then((response) => {
       if (response.data.error) {
         console.log(response.data.error);
         return;
@@ -63,7 +63,7 @@ function PostDetail() {
   // 댓글 삭제
   const onDeleteComment = async (commentId) => {
     await axios
-      .delete(`http://localhost:3001/Comments/${commentId}`, {
+      .delete(`https://sangju-gallery.herokuapp.com/Comments/${commentId}`, {
         data: { newPassword: commentPassword },
       })
       .then((response) => {
@@ -99,7 +99,7 @@ function PostDetail() {
   useEffect(async () => {
     // post 정보 받아오기
     await axios
-      .get(`http://localhost:3001/posts/${postId}`)
+      .get(`https://sangju-gallery.herokuapp.com/posts/${postId}`)
       .then((response) => {
         if (response.data.error) {
           console.log(response.data.error);
@@ -111,7 +111,7 @@ function PostDetail() {
       });
     // comments 정보 받아오기
     await axios
-      .get(`http://localhost:3001/comments/${postId}`)
+      .get(`https://sangju-gallery.herokuapp.com/comments/${postId}`)
       .then((response) => {
         if (response.data.error) {
           console.log(response.data.error);

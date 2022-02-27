@@ -11,7 +11,7 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
-
+// 
 function Home({ postId }) {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -76,7 +76,7 @@ function Home({ postId }) {
   ];
 
   useEffect(async () => {
-    await axios.get("http://localhost:3001/posts").then((response) => {
+    await axios.get("https://sangju-gallery.herokuapp.com/posts").then((response) => {
       setPostList(response.data);
     });
   }, []);
