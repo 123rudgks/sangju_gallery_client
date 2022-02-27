@@ -2,10 +2,25 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-import { Formik, Form, Field, ErrorMessage } from "formik";
+import { Formik, Form, Field, ErrorMessage, useFormik } from "formik";
 import * as Yup from "yup";
 // * : Components
 import Home from "./Home";
+// * : MUI
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import ThumbUpAltIcon from "@mui/icons-material/ThumbUpAlt";
+import ThumbDownAltIcon from "@mui/icons-material/ThumbDownAlt";
+import IconButton from "@mui/material/IconButton";
+import TextField from "@mui/material/TextField";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
+import Paper from "@mui/material/Paper";
 
 function PostDetail() {
   // * : states 및 변수들
@@ -22,7 +37,7 @@ function PostDetail() {
     await axios
       .post(`http://localhost:3001/likes`, { PostId: postId })
       .then((response) => {
-        setLikes(parseInt(likes)+1);
+        setLikes(parseInt(likes) + 1);
       });
   };
   // 싫어요 버튼 클릭 시 이벤트
@@ -30,7 +45,7 @@ function PostDetail() {
     await axios
       .post(`http://localhost:3001/hates`, { PostId: postId })
       .then((response) => {
-        setHates(parseInt(hates)+1);
+        setHates(parseInt(hates) + 1);
       });
   };
   // 댓글 등록 버튼 클릭 시 이벤트
@@ -40,7 +55,7 @@ function PostDetail() {
         console.log(response.data.error);
         return;
       }
-      console.log("PostDetail.js -> onCommentSubmit : ",response.data);
+      console.log("PostDetail.js -> onCommentSubmit : ", response.data);
       setCommentsList(commentsList.concat(response.data));
       resetForm();
     });
@@ -75,6 +90,11 @@ function PostDetail() {
     username: Yup.string().required("닉네임을 입력해주세요"),
     password: Yup.string().required("비밀번호를 입력해주세요"),
   });
+  const formik = useFormik({
+    initialValues: initialValues,
+    validationSchema: validationSchema,
+    onSubmit: onCommentSubmit,
+  });
 
   useEffect(async () => {
     // post 정보 받아오기
@@ -99,7 +119,7 @@ function PostDetail() {
         }
         setCommentsList(response.data);
       });
-  }, [postId,likes,hates]);
+  }, [postId, likes, hates]);
 
   return (
     <article>
@@ -116,12 +136,22 @@ function PostDetail() {
 
       <div className="post-body-container">
         <div className="post-text">{postInfo.postText}</div>
-        <div className="post-likes-hates">
-          {likes}
-          <button onClick={onLike}>like</button>
-          <button onClick={onHate}>hate</button>
-          {hates}
-        </div>
+        <Card
+          className="post-likes-hates"
+          sx={{ width: "200px" }}
+          variant="outlined"
+        >
+          <CardContent>
+            {likes}
+            <IconButton onClick={onLike}>
+              <ThumbUpAltIcon />
+            </IconButton>
+            <IconButton onClick={onHate}>
+              <ThumbDownAltIcon />
+            </IconButton>
+            {hates}
+          </CardContent>
+        </Card>
       </div>
 
       <div className="post-footer-container">
@@ -136,100 +166,146 @@ function PostDetail() {
         </div>
 
         <div className="post-comments">
-          {commentsList.map((comment, index) => {
-            return (
-              <div className="comment-container" key={index}>
-                <div className="comment-user">{comment.username}</div>
-                <div className="comment-text">{comment.commentBody}</div>
-                <div className="hidden">
-                  <input
-                    value={commentPassword}
-                    onChange={(e) => {
-                      setCommentPassword(e.target.value);
-                    }}
-                  />
-                  <button
-                    onClick={(e) => {
-                      onDeleteComment(comment.id);
-                      e.target.parentElement.className = "hidden";
-                    }}
-                  >
-                    확인
-                  </button>
-                  <button
-                    onClick={(e) => {
-                      e.target.parentElement.className = "hidden";
-                      setCommentPassword("");
-                    }}
-                  >
-                    취소
-                  </button>
-                </div>
-                <div className="comment-date">{comment.updatedAt}</div>
-                <button
-                  onClick={(e) => {
-                    // Todo: 이 부분 어떻게 더 좋게 만들까
-                    setCommentPassword("");
-                    // 다른 댓글 row의 password창 닫아주기
-                    const classList = document.getElementsByClassName(
-                      "comment-password-check"
-                    );
-                    while (classList.length > 0) {
-                      classList[0].className = "hidden";
-                    }
-                    e.target.previousElementSibling.previousElementSibling.className =
-                      "comment-password-check";
+          <TableContainer>
+            <Table>
+              <TableHead>
+                <TableRow
+                  sx={{
+                    position: "relative",
+                    display: "flex",
+                    flexDirection: "row",
                   }}
                 >
-                  X
-                </button>
-              </div>
-            );
-          })}
+                  <TableCell align="center" sx={{ width: "100px" }}>
+                    작성자
+                  </TableCell>
+                  <TableCell align="center" sx={{ flex: 1 }}>
+                    댓글
+                  </TableCell>
+                  <TableCell align="center" sx={{ width: "250px" }}>
+                    작성일
+                  </TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {commentsList.map((comment, index) => (
+                  <TableRow
+                    key={index}
+                    sx={{
+                      position: "relative",
+                      display: "flex",
+                      flexDirection: "row",
+                    }}
+                  >
+                    <TableCell align="center" sx={{ width: "100px" }}>
+                      {comment.username}
+                    </TableCell>
+                    <TableCell align="center" sx={{ flex: 1 }}>
+                      {comment.commentBody}
+                    </TableCell>
+                    <TableCell align="center" sx={{ width: "250px" }}>
+                      {comment.updatedAt}
+
+                    <IconButton
+                    size="small"
+                      onClick={(e) => {
+                        // Todo: 이 부분 어떻게 더 좋게 만들까
+                        setCommentPassword("");
+                        // 다른 댓글 row의 password창 닫아주기
+                        const classList = document.getElementsByClassName(
+                          "comment-password-check"
+                        );
+                        while (classList.length > 0) {
+                          classList[0].className = "hidden";
+                        }
+                        e.target.nextElementSibling.className =
+                          "comment-password-check";
+                      }}
+                    >
+                      x
+                    </IconButton>
+                    <div className="hidden">
+                      <input
+                        value={commentPassword}
+                        onChange={(e) => {
+                          setCommentPassword(e.target.value);
+                        }}
+                      />
+                      <button
+                        onClick={(e) => {
+                          onDeleteComment(comment.id);
+                          e.target.parentElement.className = "hidden";
+                        }}
+                      >
+                        확인
+                      </button>
+                      <button
+                        onClick={(e) => {
+                          e.target.parentElement.className = "hidden";
+                          setCommentPassword("");
+                        }}
+                      >
+                        취소
+                      </button>
+                    </div>
+                    </TableCell>
+
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
         </div>
       </div>
-
-      <Formik
-        initialValues={initialValues}
-        validationSchema={validationSchema}
-        onSubmit={onCommentSubmit}
-      >
-        <Form>
-          <div className="write-comment-container">
-            <div className="write-comment-left">
-              <Field
-                autoComplete="off"
-                id="inputCreatePost"
-                name="username"
-                placeholder="닉네임을 입력해주세요"
-              />
-              <Field
-                type="password"
-                autoComplete="off"
-                id="inputCreatePost"
-                name="password"
-                placeholder="비밀번호를 입력해주세요"
-              />
-            </div>
-            <div className="write-comment-right">
-              <Field
-                as={TextArea}
-                autoComplete="off"
-                id="inputCreatePost"
-                name="commentBody"
-              />
-              <div className="float-clear">
-                <button className="float-right" type="submit">
-                  등록 + 추천
-                </button>
-                <button className="float-right" type="submit">
-                  등록
-                </button>
-              </div>
-            </div>
+      <form onSubmit={formik.handleSubmit} className="write-comment-container">
+        {/* <div > */}
+        <div className="write-comment-left">
+          <TextField
+            fullWidth
+            size="small"
+            id="username"
+            name="username"
+            label="username"
+            value={formik.values.username}
+            onChange={formik.handleChange}
+            error={formik.touched.username && Boolean(formik.errors.username)}
+            helperText={formik.touched.username && formik.errors.username}
+          />
+          <TextField
+            fullWidth
+            size="small"
+            id="password"
+            name="password"
+            label="password"
+            value={formik.values.password}
+            onChange={formik.handleChange}
+            error={formik.touched.password && Boolean(formik.errors.password)}
+            helperText={formik.touched.password && formik.errors.password}
+          />
+        </div>
+        <div className="write-comment-right">
+          <TextField
+            fullWidth
+            multiline
+            id="commentBody"
+            name="commentBody"
+            label="commentBody"
+            value={formik.values.commentBody}
+            onChange={formik.handleChange}
+            error={formik.touched.email && Boolean(formik.errors.email)}
+            helperText={formik.touched.email && formik.errors.email}
+          />
+          <div className="float-clear">
+            <button className="float-right" type="submit">
+              등록 + 추천
+            </button>
+            <button className="float-right" type="submit">
+              등록
+            </button>
           </div>
-        </Form>
-      </Formik>
+        </div>
+        {/* </div> */}
+      </form>
       <Home postId={postId} />
     </article>
   );

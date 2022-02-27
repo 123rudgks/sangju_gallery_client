@@ -12,7 +12,7 @@ import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 
-function Home({ postId }) {
+function PopularHome({ postId }) {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const handleChangePage = (event, newPage) => {
@@ -24,7 +24,6 @@ function Home({ postId }) {
   };
   // * : states
   const [postList, setPostList] = useState([]);
-  const [isPopular, setIsPopular] = useState(false);
   // * : functions
   const navigate = useNavigate();
   // move to writing post page
@@ -45,11 +44,6 @@ function Home({ postId }) {
   };
   // go to home page
   const onMoveHome = () => {
-    setIsPopular(false);
-    navigate("/");
-  };
-  const onMovePopularHome = () => {
-    setIsPopular(true);
     navigate("/");
   };
   const columns = [
@@ -84,7 +78,7 @@ function Home({ postId }) {
     <article>
       <div className="home_menu_container">
         <button onClick={onMoveHome}>전체글</button>
-        <button onClick={onMovePopularHome}>개념글</button>
+        <button>개념글</button>
         <button>공지</button>
       </div>
       <Paper sx={{ width: "100%" }}>
@@ -107,26 +101,7 @@ function Home({ postId }) {
               {postList
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((post) => {
-                  return isPopular ? (
-                    post.Likes.length - post.Hates.length > 10 && (
-                      <TableRow
-                        hover
-                        role="checkbox"
-                        tabIndex={-1}
-                        key={post.id}
-                        onClick={() => onMovePost(post.id)}
-                      >
-                        {columns.map((column) => {
-                          const value = post[column.id];
-                          return (
-                            <TableCell key={column.id} align={column.align}>
-                              {column.id === "Likes" ? value.length : value}
-                            </TableCell>
-                          );
-                        })}
-                      </TableRow>
-                    )
-                  ) : (
+                  return (
                     <TableRow
                       hover
                       role="checkbox"
@@ -190,4 +165,4 @@ function Home({ postId }) {
   );
 }
 
-export default Home;
+export default PopularHome;

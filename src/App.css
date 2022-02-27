@@ -15,7 +15,7 @@ th, td {
 }
 .header_menu {
   background-color: #219f94;
-  padding: 10px 100px;
+  padding: 0 100px;
 }
 .header_menu::after {
   content: "";
@@ -85,9 +85,7 @@ th, td {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 200px;
   height: 100px;
-  background-color: aqua;
   margin: 0 auto;
 }
 .post-footer-container {
@@ -105,6 +103,7 @@ th, td {
   flex-direction: column;
 }
 .write-comment-right {
+  width: 100%;
   display: flex;
   flex-direction: column;
 }
@@ -120,9 +119,8 @@ th, td {
 .comment-date {
 }
 .comment-password-check {
-  position: relative;
-  top: 10px;
-  left: 200px;
+  position: absolute;
+  right:0px;
 }
 .hidden {
   display: none;
